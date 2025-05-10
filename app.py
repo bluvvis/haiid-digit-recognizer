@@ -1,0 +1,68 @@
+import streamlit as st
+from recognition.model import load_model, predict_digit
+from recognition.image_utils import load_and_preprocess_image
+from recognition.explainability import explain_prediction
+from recognition.feedback import log_feedback
+import plotly.express as px
+import numpy as np
+
+# Настройка темы и стилей
+st.set_page_config(page_title="Digit Recognizer", layout="wide", initial_sidebar_state="expanded")
+st.markdown("""
+    <style>
+    .main {background: linear-gradient(to right, #e0eafc, #cfdef3);}
+    .stButton>button {background-color: #4CAF50; color: white; border-radius: 10px; padding: 10px;}
+    .stSelectbox {background-color: #ffffff; border-radius: 5px;}
+    h1 {color: #2c3e50; font-family: 'Arial', sans-serif;}
+    .sidebar .sidebar-content {background: #ffffff; border-right: 2px solid #ddd;}
+    </style>
+""", unsafe_allow_html=True)
+
+# Боковая панель
+with st.sidebar:
+    st.header("О проекте")
+    st.write("Это приложение распознаёт рукописные цифры и объясняет, как модель принимает решение. Загрузи изображение и попробуй!")
+    st.image("https://via.placeholder.com/150", caption="Пример цифры")
+
+# Основной контент
+st.title("🎨 Распознавание рукописных цифр")
+st.write("Загрузи изображение, получи предсказание и узнай, как модель думает!")
+
+# Загрузка изображения
+uploaded_file = st.file_uploader("Выбери изображение с цифрой", type=["png", "jpg", "jpeg"], help="Поддерживаются PNG, JPG, JPEG")
+
+if uploaded_file is not None:
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        # Показываем загруженное изображение
+        img = load_and_preprocess_image(uploaded_file)
+        st.image(img, caption="Твоё изображение", use_column_width=True)
+    
+    with col2:
+        # Предсказание
+        model = load_model()
+        prediction, confidence = predict_digit(model, img)
+        st.subheader(f"Предсказание: **{prediction}**")
+        st.write(f"Уверенность: **{confidence:.2%}**")
+        
+        # Индикатор уверенности
+        st.progress(confidence)
+
+    # Объяснение
+    st.subheader("🔍 Почему модель так решила?")
+    explanation = explain_prediction(model, img)
+    fig = px.imshow(explanation.reshape(8, 8), color_continuous_scale="Viridis", title="Тепловая карта важности пикселей")
+    fig.update_layout(width=400, height=400)
+    st.plotly_chart(fig)
+
+    # Обратная связь
+    with st.expander("💬 Дай обратную связь"):
+        correct_digit = st.selectbox("Если предсказание неверно, выбери правильную цифру:", list(range(10)))
+        if st.button("Отправить"):
+            log_feedback(uploaded_file.name, prediction, correct_digit)
+            st.success("Спасибо! Твой отзыв сохранён.")
+            st.balloons()
+
+# Подсказка для новых пользователей
+st.info("👉 Загрузи изображение из папки `samples/` или своё собственное, чтобы начать!")
