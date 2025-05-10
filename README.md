@@ -1,1 +1,14 @@
-# haiid-digit-recognizer
+# Interactive Digit Recognizer with Explainable AI
+
+Проект по курсу Human-AI Interaction Design. Распознаёт рукописные цифры, объясняет, как принял решение, и позволяет пользователю участвовать в процессе обучения модели.
+
+## Возможности
+- Распознавание цифр с изображений
+- Объяснение предсказаний
+- Обратная связь от пользователя
+- Прозрачность модели
+
+## Установка
+```bash
+pip install -r requirements.txt
+python main.py
