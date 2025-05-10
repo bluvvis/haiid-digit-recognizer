@@ -12,3 +12,7 @@ def load_and_train_model():
     model.fit(X_train, y_train)
     return model
 
+def print_model_info(model):
+    print("\n[Информация о модели]")
+    print(f"Количество деревьев: {len(model.estimators_)}")
+    print(f"Глубина первого дерева: {model.estimators_[0].get_depth()}")
