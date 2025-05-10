@@ -1,17 +1,13 @@
 import csv
 import os
 
-def get_user_feedback(predicted):
-    correct = input(f"Это правильно? (y/n): ")
-    if correct.lower() == 'y':
-        return predicted
-    else:
-        correct_label = input("Введите правильную цифру: ")
-        return correct_label
-
-def log_feedback(image_path, predicted, user_label):
+def log_feedback(image_name, predicted, correct_digit):
+    """Логирует обратную связь в CSV."""
     os.makedirs("data", exist_ok=True)
-    with open("data/feedback_log.csv", "a", newline="") as csvfile:
+    file_path = "data/feedback_log.csv"
+    file_exists = os.path.isfile(file_path)
+    with open(file_path, "a", newline="") as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow([image_path, predicted, user_label])
-
+        if not file_exists:
+            writer.writerow(["image_name", "predicted_digit", "correct_digit"])
+        writer.writerow([image_name, predicted, correct_digit])
