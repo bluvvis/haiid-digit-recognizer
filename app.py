@@ -1,5 +1,5 @@
 import streamlit as st
-from recognition.model import load_model, predict_digit
+from recognition.model import load_and_train_model, predict_digit
 from recognition.image_utils import load_and_preprocess_image
 from recognition.explainability import explain_prediction
 from recognition.feedback import log_feedback
@@ -32,37 +32,40 @@ st.write("Загрузи изображение, получи предсказа
 uploaded_file = st.file_uploader("Выбери изображение с цифрой", type=["png", "jpg", "jpeg"], help="Поддерживаются PNG, JPG, JPEG")
 
 if uploaded_file is not None:
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        # Показываем загруженное изображение
-        img = load_and_preprocess_image(uploaded_file)
-        st.image(img, caption="Твоё изображение", use_column_width=True)
-    
-    with col2:
-        # Предсказание
-        model = load_model()
-        prediction, confidence = predict_digit(model, img)
-        st.subheader(f"Предсказание: **{prediction}**")
-        st.write(f"Уверенность: **{confidence:.2%}**")
+    try:
+        col1, col2 = st.columns(2)
         
-        # Индикатор уверенности
-        st.progress(confidence)
+        with col1:
+            # Показываем загруженное изображение
+            img, img_array = load_and_preprocess_image(uploaded_file)
+            st.image(img, caption="Твоё изображение", use_column_width=True)
+        
+        with col2:
+            # Предсказание
+            model = load_and_train_model()
+            prediction, confidence = predict_digit(model, img_array.reshape(1, -1))
+            st.subheader(f"Предсказание: **{prediction}**")
+            st.write(f"Уверенность: **{confidence:.2%}**")
+            
+            # Индикатор уверенности
+            st.progress(confidence)
 
-    # Объяснение
-    st.subheader("🔍 Почему модель так решила?")
-    explanation = explain_prediction(model, img)
-    fig = px.imshow(explanation.reshape(8, 8), color_continuous_scale="Viridis", title="Тепловая карта важности пикселей")
-    fig.update_layout(width=400, height=400)
-    st.plotly_chart(fig)
+        # Объяснение
+        st.subheader("🔍 Почему модель так решила?")
+        explanation = explain_prediction(model, img_array)
+        fig = px.imshow(explanation.reshape(8, 8), color_continuous_scale="Viridis", title="Тепловая карта важности пикселей")
+        fig.update_layout(width=400, height=400)
+        st.plotly_chart(fig)
 
-    # Обратная связь
-    with st.expander("💬 Дай обратную связь"):
-        correct_digit = st.selectbox("Если предсказание неверно, выбери правильную цифру:", list(range(10)))
-        if st.button("Отправить"):
-            log_feedback(uploaded_file.name, prediction, correct_digit)
-            st.success("Спасибо! Твой отзыв сохранён.")
-            st.balloons()
+        # Обратная связь
+        with st.expander("💬 Дай обратную связь"):
+            correct_digit = st.selectbox("Если предсказание неверно, выбери правильную цифру:", list(range(10)))
+            if st.button("Отправить"):
+                log_feedback(uploaded_file.name, prediction, correct_digit)
+                st.success("Спасибо! Твой отзыв сохранён.")
+                st.balloons()
+    except Exception as e:
+        st.error(f"Ошибка: {e}")
 
 # Подсказка для новых пользователей
 st.info("👉 Загрузи изображение из папки `samples/` или своё собственное, чтобы начать!")
