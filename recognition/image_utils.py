@@ -1,19 +1,13 @@
 import numpy as np
 from PIL import Image, ImageOps
-import matplotlib.pyplot as plt
 
-def select_and_process_image(image_path):
+def load_and_preprocess_image(file):
+    """Загружает и обрабатывает изображение в формат 8x8."""
     try:
-        img = Image.open(image_path).convert('L')
+        img = Image.open(file).convert('L')
         img = img.resize((8, 8), Image.Resampling.LANCZOS)
         img = ImageOps.invert(img)
         img_array = np.array(img) / 16.0
-
-        plt.imshow(img_array, cmap='gray')
-        plt.title("Обработанное изображение")
-        plt.show()
-
-        return img_array.reshape(1, -1)
+        return img, img_array.flatten()
     except Exception as e:
-        print(f"Ошибка: {e}")
-        return None
+        raise Exception(f"Ошибка обработки изображения: {e}")
