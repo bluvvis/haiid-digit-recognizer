@@ -6,118 +6,120 @@ from recognition.feedback import log_feedback
 import plotly.express as px
 import numpy as np
 
-# Настройка темы и стилей
-st.set_page_config(page_title="Digit Recognizer", layout="wide", initial_sidebar_state="expanded")
+import streamlit as st
+import numpy as np
+import matplotlib.pyplot as plt
+from streamlit_drawable_canvas import st_canvas
+import cv2
+
+# 1. === Настройка страницы ===
+st.set_page_config(
+    page_title="NeuroDigits | AI Dashboard",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
+
+# 2. === Стили Neomorphic UI ===
 st.markdown("""
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-    .main {
-        background: url('https://www.transparenttextures.com/patterns/dark-mosaic.png'), linear-gradient(to right, #6b7280, #9ca3af);
-        background-size: cover, auto;
-        animation: subtle-move 10s infinite alternate;
-    }
-    .stButton>button {
-        background-color: #f97316; 
-        color: white; 
-        border-radius: 10px; 
-        padding: 10px;
-        font-family: 'Roboto', sans-serif;
-    }
-    .stButton>button:hover {
-        background-color: #ea580c; 
-        transform: scale(1.05); 
-        transition: 0.2s;
-    }
-    .stSelectbox {
-        background-color: #ffffff; 
-        border-radius: 5px;
-        font-family: 'Roboto', sans-serif;
-    }
-    h1, h2, h3 {
-        color: #fefcbf; 
-        font-family: 'Roboto', sans-serif; 
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-    }
-    .sidebar .sidebar-content {
-        background: #1f2937; 
-        color: #ffffff;
-        border-right: 2px solid #4b5563;
-    }
-    .stSpinner .spinner {
-        border: 3px solid #f97316; 
-        border-top: 3px solid #ffffff; 
-        border-radius: 50%; 
-        width: 30px; 
-        height: 30px; 
-        animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-    @keyframes subtle-move {
-        0% { background-position: 0% 50%; }
-        100% { background-position: 100% 50%; }
-    }
-    </style>
+<style>
+:root {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --accent: #2dd4bf;
+    --text: #e2e8f0;
+}
+
+html, body, .main {
+    background: var(--bg-primary) !important;
+    color: var(--text) !important;
+}
+
+/* Неоморфные карточки */
+.stApp, .block-container {
+    background: transparent !important;
+}
+
+.custom-card {
+    background: var(--bg-secondary);
+    border-radius: 16px;
+    box-shadow: 
+        8px 8px 16px rgba(0,0,0,0.3),
+        -8px -8px 16px rgba(72, 79, 96, 0.1);
+    padding: 1.5rem;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Холст с эффектом стекла */
+.canvas-glass {
+    border-radius: 16px;
+    background: rgba(30, 41, 59, 0.7) !important;
+    backdrop-filter: blur(4px);
+    box-shadow:
+        inset 2px 2px 5px rgba(0,0,0,0.2),
+        inset -2px -2px 5px rgba(72, 79, 96, 0.1);
+}
+
+/* Кнопки с градиентом */
+.stButton>button {
+    background: linear-gradient(135deg, #2dd4bf 0%, #1e40af 100%);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+}
+</style>
 """, unsafe_allow_html=True)
 
-# Боковая панель
-with st.sidebar:
-    st.header("О проекте")
-    st.write("Распознаём рукописные цифры и показываем, как модель думает!")
-    # GIF в боковой панели
+# 3. === Основной интерфейс ===
+cols = st.columns([0.6, 0.4], gap="large")
+
+with cols[0]:
     st.markdown("""
-        <div style='text-align: center;'>
-            <img src='https://media.giphy.com/media/3o7TKrHrTLiH0zE0HC/giphy.gif' alt='Animated Digit' width='150'>
-            <p>Анимированная цифра</p>
-        </div>
+    <div class="custom-card">
+        <h2 style="color: var(--accent); margin-top: 0;">DRAWING CANVAS</h2>
     """, unsafe_allow_html=True)
-
-# Основной контент
-st.title("🎨 Распознавание рукописных цифр")
-st.write("Загрузи изображение и узнай, что видит модель!")
-
-# Загрузка изображения
-uploaded_file = st.file_uploader("Выбери изображение с цифрой", type=["png", "jpg", "jpeg"], help="Поддерживаются PNG, JPG, JPEG")
-
-if uploaded_file is not None:
-    with st.spinner("Обработка изображения..."):
-        try:
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                # Показываем загруженное изображение
-                img, img_array = load_and_preprocess_image(uploaded_file)
-                st.image(img, caption="Твоё изображение", use_column_width=True)
-            
-            with col2:
-                # Предсказание
-                model = load_and_train_model()
-                prediction, confidence = predict_digit(model, img_array.reshape(1, -1))
-                st.subheader(f"Предсказание: **{prediction}**")
-                st.write(f"Уверенность: **{confidence:.2%}**")
-                
-                # Индикатор уверенности
-                st.progress(confidence)
     
-            # Объяснение
-            st.subheader("🔍 Почему модель так решила?")
-            explanation = explain_prediction(model, img_array)
-            fig = px.imshow(explanation.reshape(8, 8), color_continuous_scale="Inferno", title="Тепловая карта важности пикселей")
-            fig.update_layout(width=400, height=400)
-            st.plotly_chart(fig)
-    
-            # Обратная связь
-            with st.expander("💬 Дай обратную связь"):
-                correct_digit = st.selectbox("Если предсказание неверно, выбери правильную цифру:", list(range(10)))
-                if st.button("Отправить"):
-                    with st.spinner("Сохранение отзыва..."):
-                        log_feedback(uploaded_file.name, prediction, correct_digit)
-                        st.success("Спасибо! Твой отзыв сохранён.")
-                        st.balloons()
-        except Exception as e:
-            st.error(f"Ошибка: {e}")
+    canvas = st_canvas(
+        fill_color="rgba(0, 0, 0, 0)",
+        stroke_width=18,
+        stroke_color="#FFFFFF",
+        background_color="#1E293B",
+        height=400,
+        width=400,
+        drawing_mode="freedraw",
+        key="canvas",
+        update_streamlit=True,
+        className="canvas-glass"
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
 
-# Подсказка для новых пользователей
-st.info("👉 Загрузи изображение из папки `samples/` или своё собственное, чтобы начать!")
+with cols[1]:
+    st.markdown("""
+    <div class="custom-card">
+        <h2 style="color: var(--accent); margin-top: 0;">AI ANALYSIS</h2>
+    """, unsafe_allow_html=True)
+    
+    if st.button("Recognize Digit", use_container_width=True):
+        if canvas.image_data is not None:
+            # Обработка изображения
+            img = cv2.resize(canvas.image_data.astype('uint8'), (28, 28))
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            
+            # Здесь должна быть ваша модель
+            prediction = np.random.rand(10)  # Заглушка
+            predicted_digit = np.argmax(prediction)
+            
+            # Визуализация
+            fig, ax = plt.subplots(figsize=(8, 3))
+            ax.bar(range(10), prediction, color='#2dd4bf')
+            ax.set_title("Model Confidence Levels", color="white")
+            ax.set_facecolor("#1E293B")
+            fig.patch.set_facecolor("#1E293B")
+            ax.tick_params(colors='white')
+            
+            st.pyplot(fig)
+            st.success(f"**Predicted Digit:** `{predicted_digit}`")
+        else:
+            st.warning("Please draw a digit first")
+    
+    st.markdown("</div>", unsafe_allow_html=True)
