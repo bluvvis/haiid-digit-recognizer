@@ -5,10 +5,11 @@ from recognition.explainability import explain_prediction
 from recognition.feedback import log_feedback
 import plotly.express as px
 import numpy as np
+import time
 
 st.set_page_config(page_title="Digit Recognizer", layout="wide", initial_sidebar_state="expanded")
 
-# Кастомный стиль с анимациями
+# ---------- Кастомный CSS ----------
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
@@ -23,6 +24,27 @@ st.markdown("""
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
+    }
+
+    .typewriter h1 {
+        overflow: hidden;
+        border-right: .15em solid #ec4899;
+        white-space: nowrap;
+        margin: 0 auto;
+        letter-spacing: .05em;
+        animation:
+            typing 3.5s steps(40, end),
+            blink-caret .75s step-end infinite;
+    }
+
+    @keyframes typing {
+        from { width: 0 }
+        to { width: 100% }
+    }
+
+    @keyframes blink-caret {
+        from, to { border-color: transparent }
+        50% { border-color: #ec4899; }
     }
 
     .stButton>button {
@@ -54,13 +76,6 @@ st.markdown("""
         box-shadow: 0 0 15px rgba(0, 150, 200, 0.3);
     }
 
-    .sidebar .sidebar-content {
-        background: rgba(255, 255, 255, 0.7);
-        border-radius: 10px;
-        padding: 20px;
-        animation: fadeIn 1s ease-in-out;
-    }
-
     .main-title {
         background: rgba(255,255,255,0.9);
         padding: 20px;
@@ -81,49 +96,59 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Боковая панель
+# ---------- Сайдбар ----------
 with st.sidebar:
     st.header("📖 О приложении")
     st.write("Распознавайте рукописные цифры с помощью ИИ! Загружайте изображения и смотрите результат.")
     st.image("bg.gif", use_container_width=True)
 
-# Заголовок
+# ---------- Заголовок ----------
 st.markdown("""
-<div class='main-title'>
+<div class='main-title typewriter'>
     <h1>✨ Распознавание рукописных цифр</h1>
-    <p>Загрузите изображение (PNG, JPG) с цифрой, и модель предскажет результат!</p>
 </div>
 """, unsafe_allow_html=True)
 
-# Загрузка изображения
-uploaded_file = st.file_uploader(
-    "📤 Выберите изображение для распознавания:",
-    type=["png", "jpg", "jpeg"],
-    help="Поддерживаются PNG, JPG, JPEG."
-)
+# ---------- Инициализация session_state ----------
+if "uploaded_file" not in st.session_state:
+    st.session_state["uploaded_file"] = None
 
-if uploaded_file is not None and st.button("🔄 Очистить изображение"):
-    uploaded_file = None
+# ---------- Загрузка изображения ----------
+uploaded = st.file_uploader("📤 Выберите изображение для распознавания:", type=["png", "jpg", "jpeg"])
+
+# Сохраняем файл в сессии
+if uploaded:
+    st.session_state["uploaded_file"] = uploaded
+
+# ---------- Очистка изображения ----------
+if st.button("🗑️ Очистить изображение"):
+    st.session_state["uploaded_file"] = None
     st.rerun()
 
-if uploaded_file is not None:
+# ---------- Предсказание ----------
+if st.session_state["uploaded_file"] is not None:
     with st.spinner("🔍 Обработка изображения..."):
         try:
+            # Анимированная прогресс-бар имитация
+            progress = st.empty()
+            for i in range(101):
+                progress.progress(i)
+                time.sleep(0.007)
+
             col1, col2 = st.columns([1, 1])
 
             with col1:
-                img, img_array = load_and_preprocess_image(uploaded_file)
+                img, img_array = load_and_preprocess_image(st.session_state["uploaded_file"])
                 st.image(img, caption="🖼️ Загруженное изображение", use_container_width=True)
 
             with col2:
                 model = load_and_train_model()
                 prediction, confidence = predict_digit(model, img_array.reshape(1, -1))
-                with st.container():
-                    st.markdown("<div class='result-card'>", unsafe_allow_html=True)
-                    st.subheader(f"🔢 Предсказание: {prediction}")
-                    st.markdown(f"**Уверенность модели**: {confidence:.2%}")
-                    st.progress(confidence)
-                    st.markdown("</div>", unsafe_allow_html=True)
+                st.markdown("<div class='result-card'>", unsafe_allow_html=True)
+                st.subheader(f"🔢 Предсказание: {prediction}")
+                st.markdown(f"**Уверенность модели**: {confidence:.2%}")
+                st.progress(confidence)
+                st.markdown("</div>", unsafe_allow_html=True)
 
             # Объяснение предсказания
             st.subheader("🧠 Как модель сделала выбор?")
@@ -141,7 +166,7 @@ if uploaded_file is not None:
                 correct_digit = st.selectbox("Если предсказание неверно, выберите правильную цифру:", list(range(10)))
                 if st.button("✅ Отправить отзыв"):
                     with st.spinner("Сохраняем ваш отзыв..."):
-                        log_feedback(uploaded_file.name, prediction, correct_digit)
+                        log_feedback(st.session_state["uploaded_file"].name, prediction, correct_digit)
                         st.success("Спасибо за отзыв! 🎉")
                         st.balloons()
 
