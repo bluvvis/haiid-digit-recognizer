@@ -1,14 +1,9 @@
 # Interactive Digit Recognizer with Explainable AI
 
-Проект по курсу Human-AI Interaction Design. Распознаёт рукописные цифры, объясняет, как принял решение, и позволяет пользователю участвовать в процессе обучения модели.
+A project for the Human-AI Interaction Design course. Recognizes handwritten numbers, explains how the decision was made, and allows the user to participate in the learning process of the model.
 
-## Возможности
-- Распознавание цифр с изображений
-- Объяснение предсказаний
-- Обратная связь от пользователя
-- Прозрачность модели
-
-## Установка
-```bash
-pip install -r requirements.txt
-python main.py
+## Features
+- Recognition of numbers from images
+- Explanation of predictions
+- User feedback
+- Transparency of the model
