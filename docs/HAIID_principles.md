@@ -1,25 +1,25 @@
-# Реализация принципов HAIID
+# Implementation of HAIID principles
 
 ## Explainability (lab4)
-Визуализируются важные пиксели, влияющие на решение модели.
+The important pixels influencing the model's decision are visualized.
 
 ## User Control (lab5)
-Пользователь может вручную ввести правильную цифру.
+The user can manually enter the correct number.
 
 ## Transparency (lab6)
-Показаны характеристики модели (Random Forest, важность признаков).
+The characteristics of the model (Random Forest, importance of features) are shown.
 
 ## Accessibility (lab7)
-Командный интерфейс с текстовой навигацией.
+Command interface with text navigation.
 
 ## Feedback Loop (lab8)
-Ответы пользователя сохраняются в лог и могут быть использованы для переобучения.
+The user's responses are saved in the log and can be used for retraining.
 
 ## Error Handling (lab9)
-Обработка ошибок загрузки изображения.
+Image loading error handling.
 
 ## User Control
-Пользователь видит предсказанную цифру и может отклонить её, введя правильный ответ. Это даёт ему контроль над моделью.
+The user sees the predicted figure and can reject it by entering the correct answer. This gives him control over the model.
 
 ## Feedback Loop
-Пользовательский ответ сохраняется в `data/feedback_log.csv`. Это может быть использовано позже для переобучения модели.
+The user's response is saved in `data/feedback_log.csv'. This can be used later to retrain the model.
