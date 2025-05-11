@@ -123,3 +123,16 @@ with cols[1]:
             st.warning("Please draw a digit first")
     
     st.markdown("</div>", unsafe_allow_html=True)
+// Добавить в конец app.py
+components.html("""
+<script>
+document.querySelector('canvas').addEventListener('mousemove', (e) => {
+    const glow = document.createElement('div');
+    glow.style = `position: absolute; left: ${e.clientX}px; top: ${e.clientY}px;
+                 width: 20px; height: 20px; background: radial-gradient(#2dd4bf, transparent 70%);
+                 pointer-events: none; z-index: 9999;`;
+    document.body.appendChild(glow);
+    setTimeout(() => glow.remove(), 300);
+});
+</script>
+""")
