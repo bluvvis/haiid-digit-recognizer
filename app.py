@@ -12,17 +12,19 @@ st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
     .main {
-        background: url('https://clipart-library.com/image_gallery/329412.png'), linear-gradient(to right, #a1c4fd, #c2e9fb);
+        background: url('https://www.transparenttextures.com/patterns/dark-mosaic.png'), linear-gradient(to right, #6b7280, #9ca3af);
+        background-size: cover, auto;
+        animation: subtle-move 10s infinite alternate;
     }
     .stButton>button {
-        background-color: #4CAF50; 
+        background-color: #f97316; 
         color: white; 
         border-radius: 10px; 
         padding: 10px;
         font-family: 'Roboto', sans-serif;
     }
     .stButton>button:hover {
-        background-color: #45a049; 
+        background-color: #ea580c; 
         transform: scale(1.05); 
         transition: 0.2s;
     }
@@ -32,16 +34,17 @@ st.markdown("""
         font-family: 'Roboto', sans-serif;
     }
     h1, h2, h3 {
-        color: #2c3e50; 
+        color: #fefcbf; 
         font-family: 'Roboto', sans-serif; 
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
     }
     .sidebar .sidebar-content {
-        background: #ffffff; 
-        border-right: 2px solid #ddd;
+        background: #1f2937; 
+        color: #ffffff;
+        border-right: 2px solid #4b5563;
     }
     .stSpinner .spinner {
-        border: 3px solid #4CAF50; 
+        border: 3px solid #f97316; 
         border-top: 3px solid #ffffff; 
         border-radius: 50%; 
         width: 30px; 
@@ -52,24 +55,28 @@ st.markdown("""
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
+    @keyframes subtle-move {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 100% 50%; }
+    }
     </style>
 """, unsafe_allow_html=True)
 
 # Боковая панель
 with st.sidebar:
     st.header("О проекте")
-    st.write("Это приложение распознаёт рукописные цифры и объясняет, как модель принимает решение. Загрузи изображение и попробуй!")
-    # Иконка через HTML
+    st.write("Распознаём рукописные цифры и показываем, как модель думает!")
+    # GIF в боковой панели
     st.markdown("""
         <div style='text-align: center;'>
-            <img src='https://img.icons8.com/color/48/000000/numbers.png' alt='Icon' width='50'>
-            <p>Пример цифры</p>
+            <img src='https://media.giphy.com/media/3o7TKrHrTLiH0zE0HC/giphy.gif' alt='Animated Digit' width='150'>
+            <p>Анимированная цифра</p>
         </div>
     """, unsafe_allow_html=True)
 
 # Основной контент
 st.title("🎨 Распознавание рукописных цифр")
-st.write("Загрузи изображение, получи предсказание и узнай, как модель думает!")
+st.write("Загрузи изображение и узнай, что видит модель!")
 
 # Загрузка изображения
 uploaded_file = st.file_uploader("Выбери изображение с цифрой", type=["png", "jpg", "jpeg"], help="Поддерживаются PNG, JPG, JPEG")
@@ -97,7 +104,7 @@ if uploaded_file is not None:
             # Объяснение
             st.subheader("🔍 Почему модель так решила?")
             explanation = explain_prediction(model, img_array)
-            fig = px.imshow(explanation.reshape(8, 8), color_continuous_scale="Viridis", title="Тепловая карта важности пикселей")
+            fig = px.imshow(explanation.reshape(8, 8), color_continuous_scale="Inferno", title="Тепловая карта важности пикселей")
             fig.update_layout(width=400, height=400)
             st.plotly_chart(fig)
     
