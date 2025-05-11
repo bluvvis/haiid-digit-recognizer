@@ -91,7 +91,7 @@ with st.sidebar:
     st.write("Распознавайте рукописные цифры с помощью ИИ! Загружайте изображения (PNG, JPG) и смотрите результат.")
     st.markdown("""
         <div style='text-align: center;'>
-            <img src='https://media.giphy.com/media/3o7TKrHrTLiH0zE0HC/giphy.gif' alt='Animated Digit' width='150' class='animated-icon'>
+            <img src='bg.gif' alt='Animated Digit' width='150' class='animated-icon'>
             <p style='color: #333333;'>Анимированная цифра</p>
         </div>
     """, unsafe_allow_html=True)
