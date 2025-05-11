@@ -123,7 +123,7 @@ with cols[1]:
             st.warning("Please draw a digit first")
     
     st.markdown("</div>", unsafe_allow_html=True)
-// Добавить в конец app.py
+
 components.html("""
 <script>
 document.querySelector('canvas').addEventListener('mousemove', (e) => {
