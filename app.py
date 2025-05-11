@@ -121,7 +121,7 @@ if uploaded:
     st.session_state["uploaded_file"] = uploaded
 
 # ---------- Очистка изображения ----------
-if st.button("🗑️ Очистить изображение"):
+if st.button("🗑️ Delete an image"):
     st.session_state["uploaded_file"] = None
     st.rerun()
 
