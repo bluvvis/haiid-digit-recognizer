@@ -9,12 +9,12 @@ import numpy as np
 # Настройка темы и стилей
 st.set_page_config(page_title="Digit Recognizer", layout="wide", initial_sidebar_state="expanded")
 st.markdown("""
-    <style>
-    .main {background: linear-gradient(to right, #e0eafc, #cfdef3);}
-    .stButton>button {background-color: #4CAF50; color: white; border-radius: 10px; padding: 10px;}
-    .stSelectbox {background-color: #ffffff; border-radius: 5px;}
-    h1 {color: #2c3e50; font-family: 'Arial', sans-serif;}
-    .sidebar .sidebar-content {background: #ffffff; border-right: 2px solid #ddd;}
+<style>
+    .main {background: url('https://www.transparenttextures.com/patterns/cubes.png'), linear-gradient(to right, #a1c4fd, #c2e9fb);}
+    .stButton>button:hover {background-color: #45a049; transform: scale(1.05); transition: 0.2s;}
+    h1 {font-family: 'Roboto', sans-serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);}
+    .stSpinner {border: 3px solid #4CAF50; border-radius: 50%; animation: spin 1s linear infinite;}
+    @keyframes spin {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}}
     </style>
 """, unsafe_allow_html=True)
 
