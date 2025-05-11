@@ -8,7 +8,7 @@ import numpy as np
 
 st.set_page_config(page_title="Digit Recognizer", layout="wide", initial_sidebar_state="expanded")
 
-# Кастомный стиль: нежно-голубой фон и розовые акценты
+# Кастомный стиль с анимациями
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
@@ -17,6 +17,12 @@ st.markdown("""
         background-color: #e0f7fa !important;
         font-family: 'Roboto', sans-serif;
         color: #333;
+        animation: fadeIn 1.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .stButton>button {
@@ -38,16 +44,21 @@ st.markdown("""
     }
 
     .stFileUploader {
-        background: rgba(255,255,255,0.8);
+        background: rgba(255,255,255,0.85);
         border-radius: 10px;
         padding: 15px;
-        backdrop-filter: blur(5px);
+        transition: box-shadow 0.3s ease;
+    }
+
+    .stFileUploader:hover {
+        box-shadow: 0 0 15px rgba(0, 150, 200, 0.3);
     }
 
     .sidebar .sidebar-content {
         background: rgba(255, 255, 255, 0.7);
         border-radius: 10px;
         padding: 20px;
+        animation: fadeIn 1s ease-in-out;
     }
 
     .main-title {
@@ -57,6 +68,7 @@ st.markdown("""
         text-align: center;
         box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         margin-bottom: 30px;
+        animation: fadeIn 1s ease-in-out;
     }
 
     .result-card {
@@ -64,6 +76,7 @@ st.markdown("""
         padding: 20px;
         border-radius: 16px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        animation: fadeIn 1.2s ease-in-out;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -91,7 +104,7 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file is not None and st.button("🔄 Очистить изображение"):
     uploaded_file = None
-    st.experimental_rerun()
+    st.rerun()
 
 if uploaded_file is not None:
     with st.spinner("🔍 Обработка изображения..."):
