@@ -18,8 +18,5 @@ The user's responses are saved in the log and can be used for retraining.
 ## Error Handling (lab9)
 Image loading error handling.
 
-## User Control
-The user sees the predicted figure and can reject it by entering the correct answer. This gives him control over the model.
-
 ## Feedback Loop
 The user's response is saved in `data/feedback_log.csv'. This can be used later to retrain the model.
