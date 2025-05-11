@@ -1,25 +1,19 @@
 import streamlit as st
-from recognition.model import load_and_train_model, predict_digit
-from recognition.image_utils import load_and_preprocess_image
-from recognition.explainability import explain_prediction
-from recognition.feedback import log_feedback
-import plotly.express as px
 import numpy as np
-
-
-
 import matplotlib.pyplot as plt
 from streamlit_drawable_canvas import st_canvas
 import cv2
+from PIL import Image
+import base64
 
-# 1. === Настройка страницы ===
+# 1. Настройка страницы
 st.set_page_config(
     page_title="NeuroDigits | AI Dashboard",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# 2. === Стили Neomorphic UI ===
+# 2. Стили Neomorphic UI
 st.markdown("""
 <style>
 :root {
@@ -34,11 +28,6 @@ html, body, .main {
     color: var(--text) !important;
 }
 
-/* Неоморфные карточки */
-.stApp, .block-container {
-    background: transparent !important;
-}
-
 .custom-card {
     background: var(--bg-secondary);
     border-radius: 16px;
@@ -49,17 +38,14 @@ html, body, .main {
     border: 1px solid rgba(255,255,255,0.05);
 }
 
-/* Холст с эффектом стекла */
 .canvas-glass {
     border-radius: 16px;
     background: rgba(30, 41, 59, 0.7) !important;
-    backdrop-filter: blur(4px);
     box-shadow:
         inset 2px 2px 5px rgba(0,0,0,0.2),
         inset -2px -2px 5px rgba(72, 79, 96, 0.1);
 }
 
-/* Кнопки с градиентом */
 .stButton>button {
     background: linear-gradient(135deg, #2dd4bf 0%, #1e40af 100%);
     border: none;
@@ -70,7 +56,7 @@ html, body, .main {
 </style>
 """, unsafe_allow_html=True)
 
-# 3. === Основной интерфейс ===
+# 3. Основной интерфейс
 cols = st.columns([0.6, 0.4], gap="large")
 
 with cols[0]:
@@ -105,8 +91,8 @@ with cols[1]:
             img = cv2.resize(canvas.image_data.astype('uint8'), (28, 28))
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             
-            # Здесь должна быть ваша модель
-            prediction = np.random.rand(10)  # Заглушка
+            # Заглушка для примера (замените на свою модель)
+            prediction = np.random.rand(10)
             predicted_digit = np.argmax(prediction)
             
             # Визуализация
@@ -124,15 +110,28 @@ with cols[1]:
     
     st.markdown("</div>", unsafe_allow_html=True)
 
-components.html("""
+# 4. 3D-эффекты курсора (опционально)
+st.components.v1.html("""
 <script>
-document.querySelector('canvas').addEventListener('mousemove', (e) => {
-    const glow = document.createElement('div');
-    glow.style = `position: absolute; left: ${e.clientX}px; top: ${e.clientY}px;
-                 width: 20px; height: 20px; background: radial-gradient(#2dd4bf, transparent 70%);
-                 pointer-events: none; z-index: 9999;`;
-    document.body.appendChild(glow);
-    setTimeout(() => glow.remove(), 300);
-});
+const canvas = document.querySelector('canvas');
+if (canvas) {
+    canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const glow = document.createElement('div');
+        glow.style.cssText = `
+            position: fixed;
+            left: ${e.clientX}px;
+            top: ${e.clientY}px;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #2dd4bf 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+        `;
+        document.body.appendChild(glow);
+        setTimeout(() => glow.remove(), 300);
+    });
+}
 </script>
 """)
