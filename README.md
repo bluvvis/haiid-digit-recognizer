@@ -7,3 +7,49 @@ A project for the Human-AI Interaction Design course. Recognizes handwritten num
 - Explanation of predictions
 - User feedback
 - Transparency of the model
+
+## 🚀 Getting Started
+
+### 🪟 Windows
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/bluvvis/haiid-digit-recognizer.git
+    cd haiid-digit-recognizer
+    ```
+
+2. Install the dependencies:
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3. Run the Streamlit app:
+
+    ```bash
+    streamlit run app.py
+    ```
+
+---
+
+### 🍏 macOS / Linux
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/bluvvis/haiid-digit-recognizer.git
+    cd haiid-digit-recognizer
+    ```
+
+2. Install the dependencies:
+
+    ```bash
+    pip3 install -r requirements.txt
+    ```
+
+3. Run the Streamlit app:
+
+    ```bash
+    streamlit run app.py
+    ```
