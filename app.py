@@ -9,20 +9,18 @@ import numpy as np
 # Настройка страницы
 st.set_page_config(page_title="Digit Recognizer", layout="wide", initial_sidebar_state="expanded")
 
-# Кастомные стили с новым фоновым GIF
+# Кастомные стили с бледно-розовым градиентом
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
     .main {
-        background: url('https://media.giphy.com/media/xT9IgzoW7HMgh9iL0Y/giphy.gif') no-repeat center center fixed;
-        background-size: cover;
-        background-color: #2d3748;  /* Запасной фон */
+        background: linear-gradient(135deg, #ffe4e6, #f3e8ff);
         font-family: 'Roboto', sans-serif;
-        color: #ffffff;
+        color: #333333;
         overflow: hidden;
     }
     .stButton>button {
-        background: linear-gradient(90deg, #4c51bf, #a3bffa);
+        background: linear-gradient(90deg, #f472b6, #f9a8d4);
         color: white;
         border: none;
         border-radius: 8px;
@@ -34,39 +32,39 @@ st.markdown("""
     }
     .stButton>button:hover {
         transform: translateY(-3px) scale(1.05);
-        background: linear-gradient(90deg, #3b426f, #81a4ed);
+        background: linear-gradient(90deg, #ec4899, #f472b6);
         box-shadow: 0 6px 20px rgba(0,0,0,0.3);
     }
     .stFileUploader {
-        background: rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.7);
         border-radius: 10px;
         padding: 15px;
         backdrop-filter: blur(5px);
         transition: all 0.3s ease;
     }
     .stFileUploader:hover {
-        background: rgba(255,255,255,0.2);
+        background: rgba(255,255,255,0.9);
         transform: scale(1.02);
     }
     .stSelectbox {
-        background: rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.7);
         border-radius: 8px;
-        color: #ffffff;
+        color: #333333;
     }
     h1, h2, h3 {
-        color: #ffffff;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        color: #333333;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         animation: fadeIn 1s ease-in;
     }
     .sidebar .sidebar-content {
-        background: linear-gradient(135deg, #2d3748, #4a5568);
-        color: #ffffff;
+        background: linear-gradient(135deg, #f9a8d4, #fed7e2);
+        color: #333333;
         border-radius: 10px;
         padding: 20px;
         animation: slideIn 0.5s ease-out;
     }
     .stProgress .st-bo {
-        background: linear-gradient(90deg, #4c51bf, #a3bffa);
+        background: linear-gradient(90deg, #f472b6, #f9a8d4);
     }
     @keyframes fadeIn {
         from { opacity: 0; }
@@ -94,7 +92,7 @@ with st.sidebar:
     st.markdown("""
         <div style='text-align: center;'>
             <img src='https://media.giphy.com/media/3o7TKrHrTLiH0zE0HC/giphy.gif' alt='Animated Digit' width='150' class='animated-icon'>
-            <p style='color: #ffffff;'>Анимированная цифра</p>
+            <p style='color: #333333;'>Анимированная цифра</p>
         </div>
     """, unsafe_allow_html=True)
 
