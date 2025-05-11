@@ -6,21 +6,17 @@ from recognition.feedback import log_feedback
 import plotly.express as px
 import numpy as np
 
-# Настройка страницы
 st.set_page_config(page_title="Digit Recognizer", layout="wide", initial_sidebar_state="expanded")
 
-# Кастомный стиль с гифкой как фоном
+# Кастомный стиль: нежно-голубой фон и розовые акценты
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-    
+
     html, body, .stApp {
-        background-image: url("bg.gif");
-        background-size: cover;
-        background-attachment: fixed;
-        background-position: center;
+        background-color: #e0f7fa !important;
         font-family: 'Roboto', sans-serif;
-        color: #333333;
+        color: #333;
     }
 
     .stButton>button {
@@ -42,7 +38,7 @@ st.markdown("""
     }
 
     .stFileUploader {
-        background: rgba(255,255,255,0.7);
+        background: rgba(255,255,255,0.8);
         border-radius: 10px;
         padding: 15px;
         backdrop-filter: blur(5px);
@@ -55,7 +51,7 @@ st.markdown("""
     }
 
     .main-title {
-        background: rgba(255,255,255,0.8);
+        background: rgba(255,255,255,0.9);
         padding: 20px;
         border-radius: 16px;
         text-align: center;
@@ -64,12 +60,11 @@ st.markdown("""
     }
 
     .result-card {
-        background: rgba(255,255,255,0.8);
+        background: rgba(255,255,255,0.9);
         padding: 20px;
         border-radius: 16px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
-
     </style>
 """, unsafe_allow_html=True)
 
@@ -77,7 +72,7 @@ st.markdown("""
 with st.sidebar:
     st.header("📖 О приложении")
     st.write("Распознавайте рукописные цифры с помощью ИИ! Загружайте изображения и смотрите результат.")
-    st.image("bg.gif", caption="Анимированная цифра", use_column_width=True)
+    st.image("bg.gif", use_container_width=True)
 
 # Заголовок
 st.markdown("""
@@ -112,7 +107,7 @@ if uploaded_file is not None:
                 prediction, confidence = predict_digit(model, img_array.reshape(1, -1))
                 with st.container():
                     st.markdown("<div class='result-card'>", unsafe_allow_html=True)
-                    st.subheader(f"🔢 Предсказание: **{prediction}**")
+                    st.subheader(f"🔢 Предсказание: {prediction}")
                     st.markdown(f"**Уверенность модели**: {confidence:.2%}")
                     st.progress(confidence)
                     st.markdown("</div>", unsafe_allow_html=True)
@@ -139,7 +134,5 @@ if uploaded_file is not None:
 
         except Exception as e:
             st.error(f"❌ Ошибка: {e}. Проверьте формат изображения.")
-
 else:
     st.info("👉 Загрузите изображение, чтобы начать распознавание.")
-
