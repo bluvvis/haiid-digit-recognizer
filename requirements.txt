@@ -1,5 +1,6 @@
-streamlit
-plotly
+streamlit>=1.22.0
+streamlit-drawable-canvas>=0.9.0
 numpy
-scikit-learn
+opencv-python
+matplotlib
 Pillow
