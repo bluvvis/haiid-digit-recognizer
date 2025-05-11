@@ -98,14 +98,14 @@ st.markdown("""
 
 # ---------- Сайдбар ----------
 with st.sidebar:
-    st.header("📖 О приложении")
-    st.write("Распознавайте рукописные цифры с помощью ИИ! Загружайте изображения и смотрите результат.")
+    st.header("📖 About the app")
+    st.write("Recognize handwritten numbers with AI! Upload images and see the result.")
     st.image("bg.gif", use_container_width=True)
 
 # ---------- Заголовок ----------
 st.markdown("""
 <div class='main-title typewriter'>
-    <h1>✨ Распознавание рукописных цифр</h1>
+    <h1>✨ Handwritten digit recognition</h1>
 </div>
 """, unsafe_allow_html=True)
 
@@ -114,7 +114,7 @@ if "uploaded_file" not in st.session_state:
     st.session_state["uploaded_file"] = None
 
 # ---------- Загрузка изображения ----------
-uploaded = st.file_uploader("📤 Выберите изображение для распознавания:", type=["png", "jpg", "jpeg"])
+uploaded = st.file_uploader("📤 Select an image for speech recognition:", type=["png", "jpg", "jpeg"])
 
 # Сохраняем файл в сессии
 if uploaded:
@@ -127,7 +127,7 @@ if st.button("🗑️ Очистить изображение"):
 
 # ---------- Предсказание ----------
 if st.session_state["uploaded_file"] is not None:
-    with st.spinner("🔍 Обработка изображения..."):
+    with st.spinner("🔍 Image Processing..."):
         try:
             # Анимированная прогресс-бар имитация
             progress = st.empty()
@@ -139,38 +139,38 @@ if st.session_state["uploaded_file"] is not None:
 
             with col1:
                 img, img_array = load_and_preprocess_image(st.session_state["uploaded_file"])
-                st.image(img, caption="🖼️ Загруженное изображение", use_container_width=True)
+                st.image(img, caption="🖼️ Uploaded Image", use_container_width=True)
 
             with col2:
                 model = load_and_train_model()
                 prediction, confidence = predict_digit(model, img_array.reshape(1, -1))
                 st.markdown("<div class='result-card'>", unsafe_allow_html=True)
-                st.subheader(f"🔢 Предсказание: {prediction}")
-                st.markdown(f"**Уверенность модели**: {confidence:.2%}")
+                st.subheader(f"🔢 Prediction: {prediction}")
+                st.markdown(f"**Model Confidence**: {confidence:.2%}")
                 st.progress(confidence)
                 st.markdown("</div>", unsafe_allow_html=True)
 
             # Объяснение предсказания
-            st.subheader("🧠 Как модель сделала выбор?")
+            st.subheader("🧠 How did the model make the choice?")
             explanation = explain_prediction(model, img_array)
             fig = px.imshow(
                 explanation.reshape(8, 8),
                 color_continuous_scale="Viridis",
-                title="Тепловая карта важности пикселей"
+                title="Heat map of pixel importance"
             )
             fig.update_layout(width=400, height=400, margin=dict(l=10, r=10, t=50, b=10))
             st.plotly_chart(fig)
 
             # Обратная связь
-            with st.expander("💬 Оставить отзыв"):
-                correct_digit = st.selectbox("Если предсказание неверно, выберите правильную цифру:", list(range(10)))
-                if st.button("✅ Отправить отзыв"):
-                    with st.spinner("Сохраняем ваш отзыв..."):
+            with st.expander("💬 Leave a review"):
+                correct_digit = st.selectbox("If the prediction is incorrect, select the correct number:", list(range(10)))
+                if st.button("✅ Send a review"):
+                    with st.spinner("We save your feedback..."):
                         log_feedback(st.session_state["uploaded_file"].name, prediction, correct_digit)
-                        st.success("Спасибо за отзыв! 🎉")
+                        st.success("Thank you for your feedback! 🎉")
                         st.balloons()
 
         except Exception as e:
-            st.error(f"❌ Ошибка: {e}. Проверьте формат изображения.")
+            st.error(f"❌ Ошибка: {e}. Check the image format.")
 else:
-    st.info("👉 Загрузите изображение, чтобы начать распознавание.")
+    st.info("👉 Upload an image to start speech recognition.")
