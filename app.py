@@ -66,17 +66,16 @@ with cols[0]:
     """, unsafe_allow_html=True)
     
     canvas = st_canvas(
-        fill_color="rgba(0, 0, 0, 0)",
-        stroke_width=18,
-        stroke_color="#FFFFFF",
-        background_color="#1E293B",
-        height=400,
-        width=400,
-        drawing_mode="freedraw",
-        key="canvas",
-        update_streamlit=True,
-        className="canvas-glass"
-    )
+    fill_color="rgba(0, 0, 0, 0)",
+    stroke_width=18,
+    stroke_color="#FFFFFF",
+    background_color="#1E293B",
+    height=400,
+    width=400,
+    drawing_mode="freedraw",
+    key="canvas",
+    update_streamlit=True
+)
     st.markdown("</div>", unsafe_allow_html=True)
 
 with cols[1]:
