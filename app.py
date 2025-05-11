@@ -100,6 +100,7 @@ st.markdown("""
 with st.sidebar:
     st.header("📖 About the app")
     st.write("Recognize handwritten numbers with AI! Upload images and see the result.")
+    st.write("You can use this picture to check⬇️⬇️⬇️")
     st.image("samples/2_example.png", use_container_width=True)
 
 # ---------- Заголовок ----------
