@@ -9,12 +9,13 @@ import numpy as np
 # Настройка страницы
 st.set_page_config(page_title="Digit Recognizer", layout="wide", initial_sidebar_state="expanded")
 
-# Кастомные стили
+# Кастомные стили с фоновой гифкой
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
     .main {
-        background: linear-gradient(135deg, #2d3748, #4c51bf, #a3bffa);
+        background: url('https://apnisite.in/panel/images/bg.gif') no-repeat center center fixed;
+        background-size: cover;
         font-family: 'Roboto', sans-serif;
         color: #ffffff;
         overflow: hidden;
